@@ -8,18 +8,21 @@ int main()
 {
 	node *root = NULL;
 
-	insert(&root, 5);
-	insert(&root, 3);
-	insert(&root, 4);
-	insert(&root, 7);
+	insert(&root, 60);
+	insert(&root, 30);
+	insert(&root, 20);
+	insert(&root, 25);
+	insert(&root, 10);
+	insert(&root, 40);
+	insert(&root, 70);
 
 	inorder(root);
 
-	node * res = search(root,4);
+	delete(root, 30);
 
-	printf("%s%d\n", "Found node: ",res->key);
+	printf("\n");
 
-	delete(root, 7);
+	inorder(root);
 
 	return 0;
 }

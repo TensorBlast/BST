@@ -89,21 +89,110 @@ node * getparent(node * root, int key)
 	{	
 		if (key == t->key)
 			return parent;
-		else if (key < t->key)
+		else if (key < t->key) {
+			parent = t;
 			t = t->left;
-		else
+		}
+		else {
+			parent = t;
 			t = t->right;
-		parent = t;
+		}
+		
 	}
 	return NULL;
 }
 
+static void transplant(node * root, node * u, node * v)
+{
+	node *uparent = getparent(root, u->key);
+	node * vparent = getparent(root, v->key);
+
+	if (uparent == NULL)
+		root = v;
+	else if (u == uparent->left)
+		uparent->left = v;
+	else uparent->right = v;
+
+	if (v!=NULL)
+		vparent = uparent;
+}
+
 node * delete(node *root, int key)
 {
-	node * todelete = search(root,key), parent = getparent(root, key);
+	node * todelete = search(root,key), *parent = getparent(root, key), *y;
 	if (todelete==NULL) {
 		fprintf(stderr, "%s\n", "Key not found");
 		exit(2);
 	}
+
+	if (todelete->left == NULL && todelete->right==NULL) { //Deleting node with no children
+		if (todelete == parent->left)
+			parent->left = NULL;
+		else
+			parent->right = NULL;
+		free(todelete);
+		return root;
+	}
+	else if (todelete->left && !todelete->right) {
+		if (todelete == parent->left)
+			parent->left = todelete->left;
+		else
+			parent->right = todelete->left;
+		free(todelete);
+		return root;
+	}
+	else if (todelete->right && !todelete->left) {
+		if (todelete == parent->left)
+			parent->left = todelete->right;
+		else
+			parent->right = todelete->right;
+		free(todelete);
+		return root;
+	}
+	else {
+	// {	printf("%s\n", "Here");
+	// 	node * yparent = NULL;
+	// 	y= todelete->right;
+	// 	while (y->left!=NULL)
+	// 	{
+	// 		y = y->left;
+	// 	}
+	// 	yparent = getparent(root, y->key);
+	// 	printf("yparent - %d\n", yparent->key);
+	// 	if(yparent != todelete) {
+	// 		yparent->right = y->right;
+	// 		y->right = todelete->right;
+	// 		node *yrightparent = getparent(root, y->right->key);
+	// 		yrightparent = y;
+	// 	}
+	// 	parent->right = y;
+	// 	y->left = todelete->left;
+	// 	node * yleftparent = getparent(root, y->left->key);
+	// 	yleftparent = y;
+	// 	free(todelete);
+	// 	return root;
+		y = todelete->right;
+		while(y->left!=NULL)
+		{
+			y = y->left;
+		}
+
+		node *yparent = getparent(root, y->key);
+		if (yparent != todelete)
+		{
+			transplant(root, y, y->right);
+			y->right = todelete->right;
+			node * yrightparent = getparent(root, y->right->key);
+			yrightparent = y;
+		}
+		transplant(root, todelete, y);
+		y->left = todelete->left;
+		node *yleftparent = getparent(root, y->left->key);
+		yleftparent = y;
+		free(todelete);
+		return root;
+
+	}
+
 
 }
