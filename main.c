@@ -10,15 +10,15 @@ int main()
 
 	insert(&root, 60);
 	insert(&root, 30);
-	insert(&root, 20);
-	insert(&root, 25);
-	insert(&root, 10);
-	insert(&root, 40);
-	insert(&root, 70);
+	// insert(&root, 20);
+	// insert(&root, 25);
+	// insert(&root, 10);
+	// insert(&root, 65);
+	// insert(&root, 70);
 
 	inorder(root);
 
-	delete(root, 30);
+	root = delete(root, 60);
 
 	printf("\n");
 

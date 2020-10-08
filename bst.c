@@ -65,6 +65,15 @@ void inorder(node * root)
 	}
 }
 
+void preorder(node * root)
+{
+	if (root!=NULL) {
+		printf("%d-> ",root->key );
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+
 node * search(node *root, int key)
 {
 	node * t = root;
@@ -117,6 +126,14 @@ static void transplant(node * root, node * u, node * v)
 		vparent = uparent;
 }
 
+static node * getminvalue(node * root)
+{
+	while (root ->left!=NULL)
+		root = root->left;
+
+	return root;
+}
+
 node * delete(node *root, int key)
 {
 	node * todelete = search(root,key), *parent = getparent(root, key), *y;
@@ -125,27 +142,40 @@ node * delete(node *root, int key)
 		exit(2);
 	}
 
+
 	if (todelete->left == NULL && todelete->right==NULL) { //Deleting node with no children
-		if (todelete == parent->left)
-			parent->left = NULL;
-		else
-			parent->right = NULL;
+		if (parent) {
+			if (todelete == parent->left)
+				parent->left = NULL;
+			else
+				parent->right = NULL;
+		}
 		free(todelete);
 		return root;
 	}
 	else if (todelete->left && !todelete->right) {
-		if (todelete == parent->left)
-			parent->left = todelete->left;
-		else
-			parent->right = todelete->left;
+		if (parent) {
+			if (todelete == parent->left)
+				parent->left = todelete->left;
+			else
+				parent->right = todelete->left;
+		}
+		else if (root==todelete) {
+			root = root -> left;
+		}
 		free(todelete);
 		return root;
 	}
 	else if (todelete->right && !todelete->left) {
-		if (todelete == parent->left)
-			parent->left = todelete->right;
-		else
-			parent->right = todelete->right;
+		if(parent) {
+			if (todelete == parent->left)
+				parent->left = todelete->right;
+			else
+				parent->right = todelete->right;
+		}
+		else if(root==todelete) {
+			root = root->right;
+		}
 		free(todelete);
 		return root;
 	}
@@ -176,10 +206,9 @@ node * delete(node *root, int key)
 		{
 			y = y->left;
 		}
-
 		node *yparent = getparent(root, y->key);
 		if (yparent != todelete)
-		{
+		{	
 			transplant(root, y, y->right);
 			y->right = todelete->right;
 			node * yrightparent = getparent(root, y->right->key);
@@ -189,7 +218,11 @@ node * delete(node *root, int key)
 		y->left = todelete->left;
 		node *yleftparent = getparent(root, y->left->key);
 		yleftparent = y;
+		if (root == todelete)
+			root = y;
 		free(todelete);
+
+
 		return root;
 
 	}

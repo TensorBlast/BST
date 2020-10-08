@@ -14,3 +14,4 @@ void insert(node **root, int key);
 node * search(node *root, int key);
 node * delete(node *root, int key);
 void inorder(node * root);
+void preorder(node * root);
