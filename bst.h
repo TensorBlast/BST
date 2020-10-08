@@ -3,12 +3,14 @@
 struct treenode
 {
 	int key;
-	node *left;
-	node *right;
+	struct treenode *left;
+	struct treenode *right;
 };
 
 typedef struct treenode node;
 
-void insert(node ** root, int key);
-node * search(node * root, int key);
-node * delete(node * root, int key);
+node * getparent(node * root, int key);
+void insert(node **root, int key);
+node * search(node *root, int key);
+node * delete(node *root, int key);
+void inorder(node * root);
